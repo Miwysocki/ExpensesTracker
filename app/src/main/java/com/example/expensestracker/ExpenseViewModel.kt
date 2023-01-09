@@ -1,6 +1,6 @@
 package com.example.expensestracker
 
-import android.util.Log
+
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -21,15 +21,19 @@ class ExpenseViewModel @Inject constructor(
 
     val expenses = repository.getAllExpenses()
 
-    public fun toast(){
-        Log.d("AAA", "toast: ")
-    }
 
     public  fun addExpense(e: Expense){
         viewModelScope.launch{
             repository.insertExpense(e)
         }
     }
+
+    fun deleteExpense(e: Expense){
+        viewModelScope.launch {
+            repository.deleteExpense(e)
+        }
+    }
+
 
     public  fun getAllExpenses() : Flow<List<Expense>> {
         return repository.getAllExpenses()

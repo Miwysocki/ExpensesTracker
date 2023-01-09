@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">ExpensesTracker</string>
     <string-array name="expense_types_array">
-        <item>food</item>
-        <item>rent</item>
-        <item>entertainment</item>
+        <item>Other</item>
+        <item>Food</item>
+        <item>Housing</item>
+        <item>Entertainment</item>
+        <item>Housing</item>
+        <item>Utilities</item>
+        <item>Healthcare</item>
     </string-array>
 </resources>

@@ -11,8 +11,10 @@ import com.example.expensestracker.data.Expense
 class ExpensesAdapter(): RecyclerView.Adapter<ExpensesAdapter.MyViewHolder>() {
 
     private var expensesList: List<Expense> = ArrayList()
+    var onItemLongClick: ((Expense) -> Unit)? = null
 
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName: TextView
         val tvType: TextView
         val tvPrice: TextView
@@ -21,6 +23,10 @@ class ExpensesAdapter(): RecyclerView.Adapter<ExpensesAdapter.MyViewHolder>() {
             tvName = view.findViewById(R.id.tvName)
             tvPrice = view.findViewById(R.id.tvPrice)
             tvType = view.findViewById(R.id.tvType)
+            itemView.setOnLongClickListener {
+                onItemLongClick?.invoke(expensesList[adapterPosition])
+                return@setOnLongClickListener true
+            }
         }
     }
 

@@ -31,12 +31,14 @@
             android:ems="10"
             android:hint="name"
             android:inputType="textPersonName"
+            android:minHeight="48dp"
             android:textAlignment="center" />
 
         <Spinner
             android:id="@+id/spinnerType"
             android:layout_width="match_parent"
-            android:layout_height="46dp" />
+            android:layout_height="48dp"
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/editTextPrice"
@@ -50,6 +52,7 @@
             android:hint="price"
 
             android:inputType="number"
+            android:minHeight="48dp"
             android:textAlignment="center" />
 
     </LinearLayout>
