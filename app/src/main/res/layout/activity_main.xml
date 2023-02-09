@@ -38,4 +38,42 @@
         app:srcCompat="@android:drawable/ic_input_add"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="295dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="13dp"
+        app:layout_constraintBottom_toTopOf="@+id/rvExpenses"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pieChart" />
+
+    <Button
+        android:id="@+id/setLimitBtn"
+        android:layout_width="151dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="84dp"
+        android:text="set limit"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/rvExpenses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/limitEditText"
+        app:layout_constraintTop_toBottomOf="@+id/pieChart"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/limitEditText"
+        android:layout_width="84dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pieChart" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

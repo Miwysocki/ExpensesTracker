@@ -1,7 +1,7 @@
 package com.example.expensestracker.data
 
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.flow.Flow
+
 
 class ExpenseRepoisitory(private val dao: ExpenseDao ) {
 
@@ -17,11 +17,15 @@ class ExpenseRepoisitory(private val dao: ExpenseDao ) {
         dao.delete(expense)
     }
 
-     fun getAllExpenses() :Flow<List<Expense>>{
-       return dao.getAllExpenses()
+    fun getAllExpenses() :LiveData<List<Expense>>{
+        return dao.getA()
     }
 
-    fun getA() :LiveData<List<Expense>>{
-        return dao.getA()
+    fun getTotalAmount(): LiveData<Int>{
+        return dao.getTotalAmount()
+    }
+
+    suspend fun deleteAll(){
+        dao.deleteAll()
     }
 }

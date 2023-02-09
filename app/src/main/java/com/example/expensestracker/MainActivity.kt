@@ -2,6 +2,12 @@ package com.example.expensestracker
 
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,8 +23,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import androidx.appcompat.app.AlertDialog
 
 
 @AndroidEntryPoint
@@ -30,20 +35,90 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         expenseViewmodel = ViewModelProvider(this).get(ExpenseViewModel::class.java)
 
         setRecyclerview()
+        setPieChart()
+        setFloatingButton()
+        setProgressBar()
+    }
 
-        val pieChart = findViewById<PieChart>(R.id.pieChart)
-        expenseViewmodel.getA().observe(this,
-            Observer<List<Expense>> { expenses: List<Expense> ->  showPieChart(pieChart,expenses) })
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.simple_menu, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.reset-> {
+                resetAll()
+                true
+            }
+            R.id.resetLimit-> {
+                resetLimit()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun resetLimit() {
+        expenseViewmodel.setExpensesLimit(this,0)
+        setProgressBar()
+    }
+
+    private fun resetAll() {
+        val alertDialog: AlertDialog = AlertDialog.Builder(this@MainActivity).create()
+        alertDialog.setTitle("Reset")
+        alertDialog.setMessage("Are you sure?")
+        alertDialog.setButton(
+            AlertDialog.BUTTON_POSITIVE, "RESET",
+            { _, _ -> expenseViewmodel.deleteAll()
+            resetLimit()})
+        alertDialog.setButton(
+            AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+             { dialog, _ -> dialog.dismiss() })
+        alertDialog.show()
+    }
+
+    private fun setProgressBar() {
+        val limitButton = findViewById<Button>(R.id.setLimitBtn)
+        val limitEditText = findViewById<EditText>(R.id.limitEditText)
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        limitButton.setOnClickListener {
+            var limit = limitEditText.text.toString().toInt()
+            expenseViewmodel.setExpensesLimit(this, limit)
+            progressBar.visibility = View.VISIBLE
+            limitButton.visibility = View.INVISIBLE
+            limitEditText.visibility = View.INVISIBLE
+            progressBar.max = limit
+        }
+
+        val expensesLimit = expenseViewmodel.getExpensesLimit(this)
+        if (expensesLimit == 0) {
+            progressBar.visibility = View.INVISIBLE
+            limitButton.visibility = View.VISIBLE
+            limitEditText.visibility = View.VISIBLE
+        } else progressBar.max = expensesLimit
+
+
+        expenseViewmodel.getTotalAmount()
+            .observe(this, Observer<Int> {  it?.let {totalCosts: Int -> progressBar.progress = totalCosts} })
+    }
+
+
+    private fun setFloatingButton() {
         val addBtn = findViewById<FloatingActionButton>(R.id.floatingAddButton)
-        addBtn.setOnClickListener{
+        addBtn.setOnClickListener {
             val newFragment = AddExpenseDialogFragment()
             newFragment.show(supportFragmentManager, "")
         }
+    }
+
+    private fun setPieChart() {
+        val pieChart = findViewById<PieChart>(R.id.pieChart)
+        expenseViewmodel.getAllExpenses().observe(this,
+            Observer<List<Expense>> { expenses: List<Expense> -> showPieChart(pieChart, expenses) })
     }
 
 
@@ -51,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         val pieEntries: ArrayList<PieEntry> = ArrayList()
         val label = "type"
 
-        //initializing data
+
         val typeAmountMap: MutableMap<String, Int> = HashMap()
         val types = resources.getStringArray(R.array.expense_types_array)
 
@@ -98,7 +173,7 @@ class MainActivity : AppCompatActivity() {
             newFragment.show(supportFragmentManager, "")
         }
         recyclerview.adapter = adapter
-        expenseViewmodel.getA().observe(this,
+        expenseViewmodel.getAllExpenses().observe(this,
             Observer<List<Expense>> { expenses: List<Expense> -> adapter.setExpenses(expenses) })
     }
 }

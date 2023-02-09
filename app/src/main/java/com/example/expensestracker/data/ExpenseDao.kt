@@ -21,4 +21,11 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM Expense")
     fun getA(): LiveData<List<Expense>>
+
+    @Query("SELECT SUM(price) FROM Expense")
+    fun getTotalAmount(): LiveData<Int>
+
+    @Query("DELETE FROM Expense")
+    suspend fun deleteAll()
+
 }
